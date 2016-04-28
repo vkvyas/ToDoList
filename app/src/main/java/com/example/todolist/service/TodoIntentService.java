@@ -2,6 +2,7 @@ package com.example.todolist.service;
 
 import android.app.IntentService;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Context;
 import android.database.Cursor;
@@ -14,7 +15,7 @@ import com.example.todolist.data.provider.TodoItemContract;
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
- * <p/>
+ * <p>
  * TODO: Customize class - update intent actions, extra parameters and static
  * helper methods.
  */
@@ -54,7 +55,7 @@ public class TodoIntentService extends IntentService {
     // TODO: Customize helper method
     public static void startActionUpdateTodoItem(Context context, TodoItemBean todoItemBean) {
         Intent intent = new Intent(context, TodoIntentService.class);
-        intent.setAction(ACTION_ADD_TODO_ITEM);
+        intent.setAction(ACTION_UPDATE_TODO_ITEM);
         intent.putExtra(EXTRA_TODO_ITEM, todoItemBean);
         context.startService(intent);
     }
@@ -97,11 +98,6 @@ public class TodoIntentService extends IntentService {
         Uri insert = contentResolver.insert(TodoItemContract.TodoItem.CONTENT_URI, TodoItemContract.TodoItem.toContentValues(todoItemBean));
         assert insert != null;
         Log.d(TAG, insert.toString());
-        Cursor query = contentResolver.query(TodoItemContract.TodoItem.CONTENT_URI, null, null, null, null);
-        while (query.moveToNext()) {
-            Log.d(TAG, query.getString(query.getColumnIndex(TodoItemContract.TodoItemsColumns.TITLE)));
-            Log.d(TAG, query.getString(query.getColumnIndex(TodoItemContract.TodoItemsColumns.DESCRIPTION)));
-        }
     }
 
     /**
@@ -109,8 +105,10 @@ public class TodoIntentService extends IntentService {
      * parameters.
      */
     private void handleActionDeleteTodoItem(TodoItemBean todoItemBean) {
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
+        ContentResolver contentResolver = getContentResolver();
+        final Uri uri = Uri.withAppendedPath(TodoItemContract.TodoItem.CONTENT_URI, todoItemBean.getId());
+        final int delete = contentResolver.delete(uri, null, null);
+        Log.d(TAG, "no of rows deleted " + delete);
     }
 
     /**
@@ -118,7 +116,10 @@ public class TodoIntentService extends IntentService {
      * parameters.
      */
     private void handleActionUpdateTodoItem(TodoItemBean todoItemBean) {
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
+        final ContentValues contentValues = TodoItemContract.TodoItem.toContentValues(todoItemBean);
+        ContentResolver contentResolver = getContentResolver();
+        final Uri uri = Uri.withAppendedPath(TodoItemContract.TodoItem.CONTENT_URI, todoItemBean.getId());
+        final int delete = contentResolver.update(uri, contentValues, null, null);
+        Log.d(TAG, "no of rows deleted " + delete);
     }
 }

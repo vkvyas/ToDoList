@@ -73,7 +73,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
 
     @Override
     public void onDeleteClicked(TodoItemBean todoItemBean) {
-        Log.d(TAG, todoItemBean.getId() + " " + todoItemBean.getDescription());
+        todoItemBean.setDeleted(1);
+        TodoIntentService.startActionUpdateTodoItem(getApplicationContext(), todoItemBean);
     }
 
     @Override
