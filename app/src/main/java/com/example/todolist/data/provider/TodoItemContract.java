@@ -1,6 +1,7 @@
 package com.example.todolist.data.provider;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -57,6 +58,17 @@ public final class TodoItemContract {
             contentValues.put(TodoItem.UPDATED_DATE, todoItemBean.getUpdatedDate());
             contentValues.put(TodoItem.IS_DELETED, todoItemBean.isDeleted());
             return contentValues;
+        }
+
+        public static TodoItemBean fromCursor(Cursor cursor) {
+            TodoItemBean todoItemBean = new TodoItemBean();
+            todoItemBean.setId(cursor.getString(cursor.getColumnIndex(_ID)));
+            todoItemBean.setTitle(cursor.getString(cursor.getColumnIndex(TITLE)));
+            todoItemBean.setDescription(cursor.getString(cursor.getColumnIndex(DESCRIPTION)));
+            todoItemBean.setCreatedDate(cursor.getLong(cursor.getColumnIndex(CREATED_DATE)));
+            todoItemBean.setUpdatedDate(cursor.getLong(cursor.getColumnIndex(UPDATED_DATE)));
+            todoItemBean.setDeleted(cursor.getInt(cursor.getColumnIndex(IS_DELETED)));
+            return todoItemBean;
         }
     }
 

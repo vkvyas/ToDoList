@@ -1,10 +1,9 @@
 package com.example.todolist;
 
-import android.content.ContentResolver;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,11 +12,13 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.todolist.data.models.TodoItemBean;
-import com.example.todolist.data.provider.TodoItemContract;
+import com.example.todolist.service.TodoIntentService;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainActivityFragment.Callbacks {
 
     private static final String TAG = "MainActivity";
+    private static final String FRAGMENT_MAIN_TAG = "fragment_main_tag";
+    FragmentManager mFragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,19 +36,17 @@ public class MainActivity extends AppCompatActivity {
                 todoItemBean.setTitle("Test Title");
                 todoItemBean.setDescription("Description");
                 todoItemBean.setCreatedDate(System.currentTimeMillis());
-                ContentResolver contentResolver = getContentResolver();
-                Uri insert = contentResolver.insert(TodoItemContract.TodoItem.CONTENT_URI, TodoItemContract.TodoItem.toContentValues(todoItemBean));
-                assert insert != null;
-                Log.d(TAG, insert.toString());
-
-                Cursor query = contentResolver.query(TodoItemContract.TodoItem.CONTENT_URI, null, null, null, null);
-                while (query.moveToNext()) {
-                    Log.d(TAG, query.getString(query.getColumnIndex(TodoItemContract.TodoItemsColumns.TITLE)));
-                    Log.d(TAG, query.getString(query.getColumnIndex(TodoItemContract.TodoItemsColumns.DESCRIPTION)));
-                }
+                TodoIntentService.startActionAddTodoItem(getApplicationContext(), todoItemBean);
             }
         });
-
+        mFragmentManager = getSupportFragmentManager();
+        if (savedInstanceState == null) {
+            MainActivityFragment mainActivityFragment = new MainActivityFragment();
+            final FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.contentMain, mainActivityFragment, FRAGMENT_MAIN_TAG);
+            fragmentTransaction.commit();
+            Log.d(TAG, "added fragment");
+        }
     }
 
     @Override
@@ -70,5 +69,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDeleteClicked(TodoItemBean todoItemBean) {
+        Log.d(TAG, todoItemBean.getId() + " " + todoItemBean.getDescription());
+    }
+
+    @Override
+    public void onItemClicked(TodoItemBean todoItemBean) {
+        Log.d(TAG, todoItemBean.getId() + " " + todoItemBean.getDescription());
     }
 }

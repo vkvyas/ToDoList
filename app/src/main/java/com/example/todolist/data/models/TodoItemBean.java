@@ -13,7 +13,7 @@ public class TodoItemBean implements Parcelable {
     private String description;
     private long createdDate;
     private long updatedDate;
-    private String isDeleted;
+    private int isDeleted;
 
     public TodoItemBean() {
     }
@@ -24,7 +24,7 @@ public class TodoItemBean implements Parcelable {
         description = in.readString();
         createdDate = in.readLong();
         updatedDate = in.readLong();
-        isDeleted = in.readString();
+        isDeleted = in.readInt();
     }
 
     public String getDescription() {
@@ -67,11 +67,11 @@ public class TodoItemBean implements Parcelable {
         this.updatedDate = updatedDate;
     }
 
-    public String isDeleted() {
+    public int isDeleted() {
         return isDeleted;
     }
 
-    public void setDeleted(String isDeleted) {
+    public void setDeleted(int isDeleted) {
         this.isDeleted = isDeleted;
     }
 
@@ -87,7 +87,7 @@ public class TodoItemBean implements Parcelable {
         dest.writeString(description);
         dest.writeLong(createdDate);
         dest.writeLong(updatedDate);
-        dest.writeString(isDeleted);
+        dest.writeInt(isDeleted);
     }
 
     static final Creator<TodoItemBean> CREATOR

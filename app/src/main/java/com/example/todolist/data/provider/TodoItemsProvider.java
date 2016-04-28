@@ -51,7 +51,9 @@ public class TodoItemsProvider extends ContentProvider {
         final int code = sUriMatcher.match(uri);
         switch (code) {
             case CODE_TODO_ITEMS:
-                return mSqLiteDatabase.query(Tables.TODO_ITEMS, projection, selection, selectionArgs, null, null, sortOrder);
+                final Cursor query = mSqLiteDatabase.query(Tables.TODO_ITEMS, projection, selection, selectionArgs, null, null, sortOrder);
+                query.setNotificationUri(getContext().getContentResolver(), uri);
+                return query;
             case CODE_TODO_ITEMS_ID:
                 return mSqLiteDatabase.query(Tables.TODO_ITEMS, projection, TodoItem._ID + "=?", new String[]{TodoItem.getTodoId(uri)}, null, null, sortOrder);
             default:
@@ -80,21 +82,9 @@ public class TodoItemsProvider extends ContentProvider {
         final int code = sUriMatcher.match(uri);
         switch (code) {
             case CODE_TODO_ITEMS:
-            case CODE_TODO_ITEMS_ID:
-                String selection = TodoItem._ID + "=?";
-                String selectionArgs[] = new String[]{TodoItem.getTodoId(uri)};
-
-                // UPDATE if the todoitem already exists in database. If not then INSERT
-                final Cursor cursor = query(uri, new String[]{TodoItem._ID}, selection, selectionArgs, null);
-                if (cursor != null && cursor.getCount() > 0) {
-                    Log.d(TAG, "Todoitem exists. Updating");
-                    final int update = update(uri, values, selection, selectionArgs);
-                    Log.d(TAG, "Todoitem exists. Rows affected " + update);
-                } else {
-                    final long id = mSqLiteDatabase.insertOrThrow(Tables.TODO_ITEMS, null, values);
-                }
+                final long lastInsertId = mSqLiteDatabase.insertOrThrow(Tables.TODO_ITEMS, null, values);
                 notifyChange(uri);
-                return TodoItem.buildTodoItemUri(values.getAsString(TodoItem._ID));
+                return TodoItem.buildTodoItemUri(String.valueOf(lastInsertId));
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
