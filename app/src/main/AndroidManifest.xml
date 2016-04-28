@@ -28,7 +28,9 @@
 
         <service
             android:name=".service.TodoIntentService"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity android:name=".NewTodoActivity"></activity>
     </application>
 
 </manifest>

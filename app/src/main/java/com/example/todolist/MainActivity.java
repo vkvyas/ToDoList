@@ -1,5 +1,6 @@
 package com.example.todolist;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
@@ -32,11 +33,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TodoItemBean todoItemBean = new TodoItemBean();
-                todoItemBean.setTitle("Test Title");
-                todoItemBean.setDescription("Description");
-                todoItemBean.setCreatedDate(System.currentTimeMillis());
-                TodoIntentService.startActionAddTodoItem(getApplicationContext(), todoItemBean);
+                startActivity(new Intent(getApplicationContext(), NewTodoActivity.class));
             }
         });
         mFragmentManager = getSupportFragmentManager();
