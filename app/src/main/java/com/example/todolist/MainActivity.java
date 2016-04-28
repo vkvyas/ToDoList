@@ -76,6 +76,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
 
     @Override
     public void onItemClicked(TodoItemBean todoItemBean) {
-        Log.d(TAG, todoItemBean.getId() + " " + todoItemBean.getDescription());
+        final Intent intent = new Intent(getApplicationContext(), NewTodoActivity.class);
+        intent.putExtra(NewTodoActivity.EXTRA_TODO_ITEM, todoItemBean);
+        startActivity(intent);
     }
 }

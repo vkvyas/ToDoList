@@ -51,7 +51,7 @@ public class TodoItemsProvider extends ContentProvider {
         final int code = sUriMatcher.match(uri);
         switch (code) {
             case CODE_TODO_ITEMS:
-                final Cursor query = mSqLiteDatabase.query(Tables.TODO_ITEMS, projection, TodoItem.IS_DELETED + "=?", new String[]{"0"}, null, null, TodoItem.CREATED_DATE + " DESC");
+                final Cursor query = mSqLiteDatabase.query(Tables.TODO_ITEMS, projection, TodoItem.IS_DELETED + "=?", new String[]{"0"}, null, null, TodoItem.UPDATED_DATE + " DESC");
                 query.setNotificationUri(getContext().getContentResolver(), uri);
                 return query;
             case CODE_TODO_ITEMS_ID:
