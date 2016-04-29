@@ -8,22 +8,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.todolist.MainActivityFragment;
 import com.example.todolist.R;
 import com.example.todolist.data.models.TodoItemBean;
 import com.example.todolist.data.provider.TodoItemContract;
-
-import static com.example.todolist.data.provider.TodoItemContract.TodoItemsColumns;
 
 /**
  * Created by vishal on 29/04/16.
  */
 public class TodoListAdapter extends CursorRecyclerViewAdapter<TodoListAdapter.ViewHolder> implements View.OnClickListener {
 
-    private final MainActivityFragment.Callbacks mCallbacks;
+    private final Callbacks mCallbacks;
     LayoutInflater mInflater;
 
-    public TodoListAdapter(Context context, Cursor cursor, MainActivityFragment.Callbacks callbacks) {
+    public TodoListAdapter(Context context, Cursor cursor, Callbacks callbacks) {
         super(context, cursor);
         mInflater = LayoutInflater.from(context);
         mCallbacks = callbacks;
@@ -67,5 +64,11 @@ public class TodoListAdapter extends CursorRecyclerViewAdapter<TodoListAdapter.V
             View btnDelete = itemView.findViewById(R.id.btnDelete);
             btnDelete.setOnClickListener(onClickListener);
         }
+    }
+
+    public interface Callbacks {
+        void onDeleteClicked(TodoItemBean todoItemBean);
+
+        void onItemClicked(TodoItemBean todoItemBean);
     }
 }

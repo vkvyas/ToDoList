@@ -1,7 +1,8 @@
 package com.example.todolist;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
@@ -32,23 +33,31 @@ public class NewTodoActivity extends AppCompatActivity {
         }
     }
 
-    public void save(View view) {
+    private boolean save() {
+        if (!validate()) {
+            return false;
+        }
         if (mTodoItemBean == null) {
             add();
         } else {
             update();
         }
-        finish();
+        return true;
     }
 
-    public void saveAndContinue(View view) {
-        if (mTodoItemBean == null) {
-            add();
-        } else {
-            update();
+    // Click listener
+    public void save(View view) {
+        if (save()) {
+            finish();
         }
-        txtTitle.setText(null);
-        txtDescription.setText(null);
+    }
+
+    // Click listener
+    public void saveAndContinue(View view) {
+        if (save()) {
+            txtTitle.setText(null);
+            txtDescription.setText(null);
+        }
     }
 
     void add() {
@@ -58,6 +67,18 @@ public class NewTodoActivity extends AppCompatActivity {
         todoItemBean.setCreatedDate(System.currentTimeMillis());
         todoItemBean.setUpdatedDate(System.currentTimeMillis());
         TodoIntentService.startActionAddTodoItem(getApplicationContext(), todoItemBean);
+    }
+
+    boolean validate() {
+        if (isEmpty(txtTitle)) {
+            txtTitle.setError("Please add a valid title!");
+            return false;
+        }
+        return true;
+    }
+
+    boolean isEmpty(EditText editText) {
+        return TextUtils.isEmpty(editText.getText().toString());
     }
 
     private void update() {

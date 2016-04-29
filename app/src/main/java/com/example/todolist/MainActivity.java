@@ -12,10 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.todolist.data.models.TodoItemBean;
-import com.example.todolist.service.TodoIntentService;
-
-public class MainActivity extends AppCompatActivity implements MainActivityFragment.Callbacks {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private static final String FRAGMENT_MAIN_TAG = "fragment_main_tag";
@@ -68,16 +65,4 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onDeleteClicked(TodoItemBean todoItemBean) {
-        todoItemBean.setDeleted(1);
-        TodoIntentService.startActionUpdateTodoItem(getApplicationContext(), todoItemBean);
-    }
-
-    @Override
-    public void onItemClicked(TodoItemBean todoItemBean) {
-        final Intent intent = new Intent(getApplicationContext(), NewTodoActivity.class);
-        intent.putExtra(NewTodoActivity.EXTRA_TODO_ITEM, todoItemBean);
-        startActivity(intent);
-    }
 }
